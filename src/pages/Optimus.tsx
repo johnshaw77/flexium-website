@@ -23,8 +23,8 @@ import { tourSlides, type SlideContent } from "./optimusTour";
  */
 const SIDE_IMAGES = [
   "/optimus-1.png",
-  "/optimus-2.jpeg",
-  "/optimus-3.jpeg",
+  "/optimus-2.png",
+  "/optimus-3.png",
   "/optimus-4.png",
   "/optimus-5.png",
   "/optimus-6.png",

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>敲會議問答情境集 — Optimus Frontdesk</title>
+<style>
+  :root {
+    --bg: #fff;
+    --fg: #1a1a1a;
+    --muted: #666;
+    --border: #e0e0e0;
+    --accent: #0a66c2;
+    --accent-soft: #e7f0fb;
+    --accent2: #7b3fb0;
+    --accent2-soft: #f3eafb;
+    --code-bg: #f6f8fa;
+    --warn-bg: #fff8e1;
+    --warn-border: #ffd54f;
+    --table-stripe: #fafbfc;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC",
+                 "Microsoft JhengHei", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px; line-height: 1.7;
+  }
+  .wrap { display: flex; max-width: 1320px; margin: 0 auto; }
+  aside {
+    position: sticky; top: 0; align-self: flex-start;
+    width: 248px; max-height: 100vh; overflow-y: auto;
+    padding: 28px 16px 28px 28px; border-right: 1px solid var(--border);
+    font-size: 14px;
+  }
+  aside .logo { font-size: 18px; font-weight: 700; margin: 0 0 4px 0; }
+  aside .tag { color: var(--muted); font-size: 12px; margin: 0 0 18px 0; }
+  aside nav a {
+    color: var(--fg); text-decoration: none; display: block;
+    padding: 4px 8px; border-radius: 4px; margin-bottom: 2px;
+  }
+  aside nav a:hover { background: var(--accent-soft); color: var(--accent); }
+  main { flex: 1; padding: 32px 48px 80px 48px; min-width: 0; }
+  h1.title { font-size: 30px; margin: 0 0 6px 0; }
+  .lede { color: var(--muted); margin: 0 0 28px 0; font-size: 15px; }
+  h2 {
+    font-size: 22px; margin: 48px 0 10px 0; padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  h2 .ico { margin-right: 8px; }
+  p { margin: 10px 0; }
+  a { color: var(--accent); }
+  code {
+    font-family: "SF Mono", ui-monospace, Consolas, Menlo, monospace;
+    font-size: 0.9em; background: var(--code-bg);
+    border: 1px solid var(--border); padding: 1px 5px; border-radius: 4px;
+  }
+  .flow {
+    background: var(--accent-soft); border: 1px solid #bcd9f5;
+    border-radius: 10px; padding: 16px 20px; margin: 18px 0 8px 0;
+    font-size: 14px; line-height: 1.9;
+  }
+  .flow b { color: var(--accent); }
+  .flow .arrow { color: var(--muted); margin: 0 6px; }
+  .note {
+    background: var(--warn-bg); border-left: 4px solid var(--warn-border);
+    border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 16px 0;
+    font-size: 14px;
+  }
+  .sect-inviter h2 { color: var(--accent); }
+  .sect-ceo h2 { color: var(--accent2); }
+  ol.qa {
+    list-style: none; counter-reset: q; padding: 0;
+    margin: 18px 0; column-count: 2; column-gap: 36px;
+  }
+  ol.qa li {
+    counter-increment: q; break-inside: avoid; position: relative;
+    padding: 9px 12px 9px 44px; margin-bottom: 8px;
+    background: #fff; border: 1px solid var(--border);
+    border-radius: 8px; font-size: 14.5px; line-height: 1.55;
+  }
+  ol.qa li::before {
+    content: counter(q); position: absolute; left: 10px; top: 9px;
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .sect-inviter ol.qa li::before { background: var(--accent); }
+  .sect-ceo ol.qa li::before { background: var(--accent2); }
+  .sect-inviter ol.qa li:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .sect-ceo ol.qa li:hover { border-color: var(--accent2); background: var(--accent2-soft); }
+  .cat {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    color: var(--muted); letter-spacing: .3px; text-transform: none;
+    margin-bottom: 2px;
+  }
+  footer {
+    margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--border);
+    color: var(--muted); font-size: 13px;
+  }
+  @media (max-width: 900px) {
+    aside { display: none; }
+    ol.qa { column-count: 1; }
+    main { padding: 24px 20px 60px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <aside>
+    <p class="logo">Optimus AI</p>
+    <p class="tag">敲會議問答情境集</p>
+    <nav>
+      <a href="#flow">＃ 流程設計</a>
+      <a href="#inviter">① 邀約方 × Frontdesk（30）</a>
+      <a href="#ceo">② CEO × Optimus 助理（30）</a>
+    </nav>
+  </aside>
+
+  <main>
+    <h1 class="title">敲會議問答情境集</h1>
+    <p class="lede">
+      任何想與 David 敲會議的人，一律先向數位接待員
+      <b>Optimus Frontdesk</b> 申請或詢問合適時間；AI 接待員從系統撈出並整理候選時段交給 CEO 審閱。
+      本文件分別列舉「邀約方」與「CEO」在這個流程中最可能提出的各 30 個問題，
+      作為調整 agent prompt、FAQ、與系統能力盤點的依據。
+    </p>
+
+    <div class="flow" id="flow">
+      <b>外部邀約人</b><span class="arrow">→</span>
+      向 <b>Optimus Frontdesk</b> 申請時間
+      <span class="arrow">→</span>
+      Frontdesk 從行事曆 / 邀約系統撈出空檔並整理候選時段
+      <span class="arrow">→</span>
+      交付 <b>CEO（David）</b>＋ Optimus 助理審閱
+      <span class="arrow">→</span>
+      確認 → 寄出行事曆邀請
+    </div>
+    <div class="note">
+      Frontdesk 為極窄權限＋row-level ownership（只看 / 改自己建立的邀約與聯絡人），
+      所有對外用語走中文護欄；CEO 端的 Optimus 助理則具完整助理領域權限，可跨行程 / 任務 / 決議調閱。
+    </div>
+
+    <!-- ============ 邀約方 ============ -->
+    <section class="sect-inviter" id="inviter">
+      <h2><span class="ico">①</span>邀約方 對 Optimus Frontdesk 可能會問的 30 個問題</h2>
+      <p class="lede">外部來訪者、合作夥伴、求職者等想敲會議的人，最常向接待員提出的疑問。</p>
+      <ol class="qa">
+        <li><span class="cat">時段</span>David 最近哪些時段有空？最快什麼時候能約得到？</li>
+        <li><span class="cat">時段</span>我想約 30 分鐘，下週二下午可以嗎？</li>
+        <li><span class="cat">偏好</span>David 偏好上午還是下午開會？有沒有固定避開的時段？</li>
+        <li><span class="cat">候選</span>我可以一次提出三個候選時段讓 David 挑嗎？</li>
+        <li><span class="cat">時長</span>David 一般一次會談多長？我這個主題大概要留多久？</li>
+        <li><span class="cat">形式</span>這場會議是線上還是實體？由誰決定？</li>
+        <li><span class="cat">形式</span>如果線上，用什麼會議軟體（Teams / Google Meet）？</li>
+        <li><span class="cat">地點</span>如果實體，地點在哪？需要提前報到或換證嗎？</li>
+        <li><span class="cat">資料</span>我需要先提供哪些資料，邀約才能成立？</li>
+        <li><span class="cat">主題</span>邀約一定要先寫清楚會議主題與目的嗎？</li>
+        <li><span class="cat">前置</span>邀約通常需要在幾天前提出？臨時的能排嗎？</li>
+        <li><span class="cat">跨時區</span>我人在美國，可以約跨時區的線上會議嗎？</li>
+        <li><span class="cat">類別</span>我想談合作 / 投資 / 採購，這算哪一類邀約？流程一樣嗎？</li>
+        <li><span class="cat">人數</span>我可以帶同事一起參加嗎？對方人數上限是多少？</li>
+        <li><span class="cat">輕量</span>如果只是 10 分鐘電話確認，需要走正式會議流程嗎？</li>
+        <li><span class="cat">時段</span>可以約晚上或週末嗎？還是僅限上班時段？</li>
+        <li><span class="cat">合規</span>談這個主題之前需要先簽 NDA 嗎？由誰提供？</li>
+        <li><span class="cat">回覆</span>邀約送出後，大概多久會收到回覆？</li>
+        <li><span class="cat">狀態</span>我可以隨時查詢目前邀約的處理狀態嗎？怎麼查？</li>
+        <li><span class="cat">修改</span>送出後如果我要改時間或主題，還能調整嗎？</li>
+        <li><span class="cat">取消</span>如果臨時不能來，我要怎麼取消已排定的會議？</li>
+        <li><span class="cat">確認</span>時間敲定後，我會收到行事曆邀請 / 確認信嗎？</li>
+        <li><span class="cat">變動</span>如果 David 那天臨時有事，我會被怎麼通知？能改期嗎？</li>
+        <li><span class="cat">沿用</span>我之前約過，可以沿用上次留的聯絡資料嗎？</li>
+        <li><span class="cat">替代</span>如果我給的時段都不行，下一個可行的空檔是什麼時候？</li>
+        <li><span class="cat">準備</span>會議前需要先準備簡報或議程給 David 看嗎？</li>
+        <li><span class="cat">議程</span>David 會想先看到議程或討論大綱嗎？</li>
+        <li><span class="cat">後續</span>會議結束後若要再約一次 follow-up，要重新申請嗎？</li>
+        <li><span class="cat">隱私</span>我提供的聯絡資訊會被怎麼使用 / 保存？</li>
+        <li><span class="cat">真人</span>如果情況特殊，能不能轉接真人助理協助處理？</li>
+      </ol>
+    </section>
+
+    <!-- ============ CEO ============ -->
+    <section class="sect-ceo" id="ceo">
+      <h2><span class="ico">②</span>CEO（David）對 Optimus 助理 可能會問的 30 個問題</h2>
+      <p class="lede">當助理把整理好的候選時段與邀約清單交付審閱時，David 最常追問的決策性問題。</p>
+      <ol class="qa">
+        <li><span class="cat">總覽</span>今天 / 本週有哪些待我確認的邀約？</li>
+        <li><span class="cat">識人</span>這個人是誰？背景、職稱、所屬公司是什麼？</li>
+        <li><span class="cat">目的</span>他想談什麼主題？這場會議的目的是什麼？</li>
+        <li><span class="cat">優先</span>這個邀約重要嗎？你建議我優先處理嗎？為什麼？</li>
+        <li><span class="cat">空檔</span>我這週還剩哪些空檔可以排？哪幾天比較鬆？</li>
+        <li><span class="cat">推薦</span>幫我從現有行程推薦三個最適合的時段。</li>
+        <li><span class="cat">衝突</span>這個邀約跟我現有行程有沒有衝突？</li>
+        <li><span class="cat">歷史</span>這個人之前跟我見過面嗎？上次談了什麼？</li>
+        <li><span class="cat">時長</span>這場預計多長？要不要幫我壓縮到 30 分鐘？</li>
+        <li><span class="cat">形式</span>線上還是實體？地點在哪？需要我移動嗎？</li>
+        <li><span class="cat">排序</span>可以把它排在某某會議後面、連著開嗎？</li>
+        <li><span class="cat">負載</span>這天我已經排幾場會了？會不會太滿？</li>
+        <li><span class="cat">調整</span>幫我把這場移到下午 / 改到下週。</li>
+        <li><span class="cat">委派</span>這場我可以委派誰代我出席嗎？</li>
+        <li><span class="cat">婉拒</span>這個邀約可以婉拒嗎？幫我擬一個得體的回覆。</li>
+        <li><span class="cat">準備</span>這個主題我需要事先準備或了解什麼？</li>
+        <li><span class="cat">脈絡</span>有沒有相關的歷史會議紀錄、決議或專案可以參考？</li>
+        <li><span class="cat">關聯</span>這場會議跟我們公司哪個專案 / 部門相關？</li>
+        <li><span class="cat">資料</span>對方有提供議程、簡報或背景資料嗎？</li>
+        <li><span class="cat">來源</span>這個邀約是從 frontdesk 進來、還是直接管道？</li>
+        <li><span class="cat">急迫</span>對方急著要約嗎？有沒有 deadline？</li>
+        <li><span class="cat">出差</span>我那天要出差，幫我把這場改成線上。</li>
+        <li><span class="cat">確認</span>幫我確認這個時段並寄出行事曆邀請給對方。</li>
+        <li><span class="cat">規劃</span>這週哪天最適合集中安排所有外部會議？</li>
+        <li><span class="cat">保留</span>我想留週五下午不排會，幫我整段擋下來。</li>
+        <li><span class="cat">清單</span>幫我把本週所有外部邀約整理成一份清單。</li>
+        <li><span class="cat">後續</span>這場結束後，幫我安排一個 follow-up 提醒。</li>
+        <li><span class="cat">逾時</span>哪些邀約已經超過三天還沒回覆對方？</li>
+        <li><span class="cat">聯絡</span>這個人的聯絡方式是什麼？方便我私下先聊嗎？</li>
+        <li><span class="cat">守門</span>有沒有看起來像推銷 / 不相關的邀約可以幫我先過濾掉？</li>
+      </ol>
+    </section>
+
+    <footer>
+      Optimus AI · 敲會議問答情境集 · 產生於 2026-05-29 ·
+      搭配 <code>skills/ceo-frontdesk-api/SKILL.md</code> 與
+      <code>skills/ceo-assistant-api/SKILL.md</code> 一起維護。
+    </footer>
+  </main>
+</div>
+</body>
+</html>

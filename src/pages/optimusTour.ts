@@ -41,6 +41,7 @@ export interface TourSlide {
   /**
    * 選填：相關網址。不論 content 是哪一種 kind，只要填了 url，
    * 該頁就會出現「開啟網頁」按鈕，點擊後以新分頁開啟此網址。
+   * 需要錨點時直接寫在網址後面即可，例如 "/page.html#ceo"。
    */
   url?: string;
   /**
@@ -90,11 +91,12 @@ export const tourSlides: TourSlide[] = [
   },
   {
     id: "live-webpage",
-    title: "範例：實際網頁",
-    description: "直接內嵌真實頁面，type 設為 webpage",
+    title: "模擬問題",
+    description: "向 Optimus 提問，例如：會議議程、待辦事項、邀約等",
     content: {
-      kind: "placeholder",
-      hint: '範例 → { kind: "webpage", src: "https://your-app-url" }',
+      kind: "image",
+      src: "/optimus-ask.png",
     },
+    url: "/frontdesk-meeting-qa.html#ceo",
   },
 ];
