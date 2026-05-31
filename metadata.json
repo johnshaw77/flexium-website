@@ -1,0 +1,6 @@
+{
+  "name": "Boltshift Hero",
+  "description": "A pixel-perfect replica of the Boltshift hero section showcasing a dark theme with modern typography and glowing CTA buttons.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
