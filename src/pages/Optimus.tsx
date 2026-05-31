@@ -235,8 +235,10 @@ function TourStage({
             animate={{ opacity: 0.9 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className={`hidden min-[1450px]:block fixed top-1/2 -translate-y-1/2 z-20 w-[15vw] max-w-[260px] h-auto max-h-[68vh] object-cover rounded-2xl  shadow-2xl pointer-events-none select-none ${
-              decoSide === "left" ? "left-8" : "right-8"
+            className={`hidden min-[1450px]:block fixed top-1/2 -translate-y-1/2 z-20 w-[min(280px,calc(50vw-38rem))] h-auto max-h-[68vh] object-cover rounded-2xl shadow-2xl pointer-events-none select-none ${
+              decoSide === "left"
+                ? "right-[calc(50%+37rem)]"
+                : "left-[calc(50%+37rem)]"
             }`}
           />
         </AnimatePresence>
