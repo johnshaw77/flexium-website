@@ -58,7 +58,7 @@ export const tourSlides: TourSlide[] = [
     description: "Overview",
     content: {
       kind: "pdf",
-      src: "/optimus-ai.pdf",
+      src: "/optimus-ai2.pdf",
     },
   },
   // {
@@ -111,12 +111,10 @@ export const tourSlides: TourSlide[] = [
     url: "/frontdesk-meeting-qa.html#ceo",
   },
   {
-    id: "todo",
-    title: "問題點列表",
-    description: "列出可能的問題點",
-    content: {
-      kind: "image",
-      src: "/todo.png",
-    },
+    id: "dev-plan",
+    title: "邀約轉會議 — 開發計劃",
+    description: "功能方向、平台分析與待解問題",
+    content: { kind: "webpage", src: "/dev-plan.html" },
+    // 或 url: "/dev-plan.html"  // 改成「開啟網頁」按鈕另開分頁
   },
 ];
