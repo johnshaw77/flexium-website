@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>邀約轉會議功能開發計劃 — Optimus</title>
+<style>
+  :root {
+    --bg: #050608;
+    --fg: #f2f5fa;
+    --muted: #9aa4b2;
+    --brand: #2582ff;
+    --brand-2: #005cf5;
+    --card: rgba(255, 255, 255, 0.03);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(37, 130, 255, 0.55);
+    --good: #34d399;
+    --bad: #fb7185;
+    --warn: #fbbf24;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--fg);
+    font-family: "PingFang TC", "Microsoft JhengHei", -apple-system,
+                 BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.75; font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ---- Animated glow backdrop ---- */
+  .bg {
+    position: fixed; inset: 0; z-index: -2; overflow: hidden;
+    background:
+      radial-gradient(60rem 60rem at 15% -10%, rgba(37,130,255,0.18), transparent 60%),
+      radial-gradient(50rem 50rem at 110% 10%, rgba(0,92,245,0.16), transparent 55%),
+      #050608;
+  }
+  .bg::before {
+    content: ""; position: absolute; inset: -25%;
+    background:
+      radial-gradient(22rem 22rem at 30% 40%, rgba(37,130,255,0.20), transparent 60%),
+      radial-gradient(26rem 26rem at 70% 60%, rgba(99,102,241,0.16), transparent 60%);
+    filter: blur(40px);
+    animation: drift 18s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    0%   { transform: translate(0,0) scale(1); }
+    50%  { transform: translate(4%, -3%) scale(1.08); }
+    100% { transform: translate(-3%, 4%) scale(1.04); }
+  }
+  /* subtle grid */
+  .grid {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(37,130,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(37,130,255,0.05) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 40%, transparent 100%);
+  }
+
+  .wrap { max-width: 920px; margin: 0 auto; padding: 72px 24px 120px; }
+
+  /* ---- Hero ---- */
+  .hero { text-align: center; margin-bottom: 64px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--brand);
+    padding: 6px 14px; border: 1px solid var(--border);
+    border-radius: 999px; background: rgba(37,130,255,0.08);
+    opacity: 0; transform: translateY(12px);
+    animation: rise 0.7s 0.05s ease-out forwards;
+  }
+  .eyebrow .dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--brand);
+    box-shadow: 0 0 0 0 rgba(37,130,255,0.7);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(37,130,255,0.55); }
+    70%  { box-shadow: 0 0 0 8px rgba(37,130,255,0); }
+    100% { box-shadow: 0 0 0 0 rgba(37,130,255,0); }
+  }
+  h1 {
+    font-size: clamp(30px, 5.2vw, 50px); font-weight: 800;
+    letter-spacing: -0.02em; line-height: 1.15;
+    margin: 22px 0 14px;
+    background: linear-gradient(110deg,#fff 0%,#fff 38%,#7db8ff 50%,#fff 62%,#fff 100%);
+    background-size: 220% auto;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    animation: shine 7s ease-in-out infinite, rise 0.8s 0.12s ease-out both;
+  }
+  @keyframes shine {
+    0% { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+  .hero p {
+    color: var(--muted); max-width: 560px; margin: 0 auto;
+    opacity: 0; transform: translateY(12px);
+    animation: rise 0.8s 0.22s ease-out forwards;
+  }
+
+  @keyframes rise {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---- Timeline / sections ---- */
+  .timeline { position: relative; padding-left: 0; }
+
+  .section {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 26px 28px 24px;
+    margin-bottom: 22px;
+    backdrop-filter: blur(6px);
+    transition: transform 0.35s cubic-bezier(.2,.7,.3,1),
+                border-color 0.35s, box-shadow 0.35s, background 0.35s;
+    /* reveal initial state */
+    opacity: 0; transform: translateY(28px);
+  }
+  .section.in { opacity: 1; transform: translateY(0); }
+  .section:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-hover);
+    background: rgba(37,130,255,0.05);
+    box-shadow: 0 18px 50px -20px rgba(37,130,255,0.45);
+  }
+
+  .section .head {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 6px;
+  }
+  .num {
+    flex: 0 0 auto;
+    width: 42px; height: 42px; border-radius: 12px;
+    display: grid; place-items: center;
+    font-weight: 800; font-size: 18px; color: #fff;
+    background: linear-gradient(160deg, var(--brand), var(--brand-2));
+    box-shadow: 0 8px 22px -8px rgba(37,130,255,0.8);
+  }
+  .section h2 {
+    font-size: 20px; font-weight: 700; margin: 0; letter-spacing: -0.01em;
+  }
+  .section .body { margin-top: 12px; }
+
+  ul.list { list-style: none; margin: 0; padding: 0; }
+  ul.list li {
+    position: relative; padding: 7px 0 7px 26px; color: #d4dae3;
+  }
+  ul.list li::before {
+    content: ""; position: absolute; left: 4px; top: 15px;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--brand); box-shadow: 0 0 10px rgba(37,130,255,0.8);
+  }
+
+  /* pros / cons / difficulty pills */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 6px; }
+  @media (max-width: 620px) { .grid2 { grid-template-columns: 1fr; } }
+  .pill {
+    border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
+    background: rgba(255,255,255,0.02);
+  }
+  .pill .label {
+    font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    font-weight: 700; margin-bottom: 4px; display: inline-flex; gap: 6px; align-items: center;
+  }
+  .pill.good .label { color: var(--good); }
+  .pill.bad .label  { color: var(--bad); }
+  .pill .label .ic { font-size: 14px; }
+
+  .note {
+    margin-top: 14px; padding: 12px 16px;
+    border-left: 3px solid var(--warn);
+    background: rgba(251,191,36,0.08); border-radius: 0 10px 10px 0;
+    color: #f3e3bd; font-size: 14.5px;
+  }
+  .note b { color: var(--warn); }
+
+  code {
+    font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 0.88em; background: rgba(37,130,255,0.12);
+    border: 1px solid var(--border); border-radius: 6px; padding: 1px 6px;
+    color: #bcd9ff;
+  }
+
+  footer {
+    text-align: center; color: var(--muted); font-size: 13px;
+    margin-top: 60px; letter-spacing: 0.1em;
+  }
+
+  /* scroll progress bar */
+  .progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--brand), var(--brand-2));
+    z-index: 10; box-shadow: 0 0 12px rgba(37,130,255,0.8);
+    transition: width 0.1s linear;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    .section { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="grid"></div>
+  <div class="progress" id="progress"></div>
+
+  <div class="wrap">
+    <header class="hero">
+      <span class="eyebrow"><span class="dot"></span>Optimus · 開發計劃</span>
+      <h1>邀約轉會議功能開發計劃</h1>
+      <p>整理會議邀約自動化的開發方向、平台分析、技術限制與待解問題。</p>
+    </header>
+
+    <div class="timeline">
+
+      <article class="section">
+        <div class="head">
+          <div class="num">1</div>
+          <h2>會議邀約功能</h2>
+        </div>
+        <div class="body">
+          <ul class="list">
+            <li>自動建立 <b>Webex</b> 會議，並需透過 <code>API</code> 執行請求。</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="section">
+        <div class="head">
+          <div class="num">2</div>
+          <h2>Line 應用分析</h2>
+        </div>
+        <div class="body">
+          <div class="grid2">
+            <div class="pill good">
+              <div class="label"><span class="ic">✓</span> 優點</div>
+              <div>台灣用戶普遍使用 Line，導入門檻低。</div>
+            </div>
+            <div class="pill bad">
+              <div class="label"><span class="ic">✕</span> 缺點</div>
+              <div>大陸用戶無法使用 Line。</div>
+            </div>
+          </div>
+          <div class="note">
+            <b>困難點：</b>需申請一個可與外網連接的公開網址，以支援 Openclaw 的需求，並解決資訊被擋住的問題。
+          </div>
+        </div>
+      </article>
+
+      <article class="section">
+        <div class="head">
+          <div class="num">3</div>
+          <h2>Webchat 支援</h2>
+        </div>
+        <div class="body">
+          <ul class="list">
+            <li>目前 Webchat 官方<b>未提供</b>支援功能。</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="section">
+        <div class="head">
+          <div class="num">4</div>
+          <h2>Outlook 安裝需求</h2>
+        </div>
+        <div class="body">
+          <ul class="list">
+            <li>在 Mac 上安裝 Outlook 需要 <b>IT 部門</b>支援。</li>
+            <li><b>研究需求：</b>若需監控信件並挑出邀約，需進一步研究與測試。</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="section">
+        <div class="head">
+          <div class="num">5</div>
+          <h2>技術限制與使用考量</h2>
+        </div>
+        <div class="body">
+          <ul class="list">
+            <li>ChatGPT 的使用可能受限於<b>額度問題</b>，需考慮資源分配。</li>
+            <li>若 Mac 設於辦公室，網路斷線時以 Telegram 通訊將面臨資訊查詢困難。</li>
+            <li>AI 生成內容可能存在不準確性（<b>幻覺</b>）。</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="section">
+        <div class="head">
+          <div class="num">6</div>
+          <h2>訊息管理與處理</h2>
+        </div>
+        <div class="body">
+          <ul class="list">
+            <li>當訊息量過多時，需探討更<b>有效的解決方案</b>。</li>
+          </ul>
+        </div>
+      </article>
+
+    </div>
+
+    <footer>Flexium · Optimus &copy; 2026</footer>
+  </div>
+
+  <script>
+    // Reveal sections on scroll (staggered)
+    const items = document.querySelectorAll(".section");
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          const el = e.target;
+          const delay = Math.min(i * 60, 240);
+          setTimeout(() => el.classList.add("in"), delay);
+          io.unobserve(el);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+    items.forEach((el) => io.observe(el));
+
+    // Scroll progress bar
+    const bar = document.getElementById("progress");
+    const onScroll = () => {
+      const h = document.documentElement;
+      const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight || 1);
+      bar.style.width = (scrolled * 100).toFixed(1) + "%";
+    };
+    document.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  </script>
+</body>
+</html>

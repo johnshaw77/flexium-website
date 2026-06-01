@@ -61,15 +61,15 @@ export const tourSlides: TourSlide[] = [
       src: "/optimus-ai.pdf",
     },
   },
-  {
-    id: "cover",
-    title: "Optimus 開發進度",
-    description: "CEO 專屬數位助理 — 進度導覽",
-    content: {
-      kind: "image",
-      src: "/optimus-screen-1.png",
-    },
-  },
+  // {
+  //   id: "cover",
+  //   title: "Optimus 開發進度",
+  //   description: "CEO 專屬數位助理 — 進度導覽",
+  //   content: {
+  //     kind: "image",
+  //     src: "/optimus-screen-1.png",
+  //   },
+  // },
   {
     id: "screenshot-demo",
     title: "WEB - CEO 工作台",
@@ -88,7 +88,18 @@ export const tourSlides: TourSlide[] = [
       kind: "video",
       src: "/web-demo.mp4",
     },
+    url: "http://100.101.75.40/dashboard",
   },
+  {
+    id: "demoflow",
+    title: "Demo Flow",
+    description: "Demo Flow",
+    content: {
+      kind: "webpage",
+      src: "/optimus-demo.html",
+    },
+  },
+
   {
     id: "live-webpage",
     title: "模擬問題",
@@ -98,5 +109,14 @@ export const tourSlides: TourSlide[] = [
       src: "/optimus-ask.png",
     },
     url: "/frontdesk-meeting-qa.html#ceo",
+  },
+  {
+    id: "todo",
+    title: "問題點列表",
+    description: "列出可能的問題點",
+    content: {
+      kind: "image",
+      src: "/todo.png",
+    },
   },
 ];
